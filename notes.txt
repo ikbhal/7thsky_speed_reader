@@ -1,0 +1,19 @@
+Bismillah
+Insha allah create speed reader in 30 minutes
+
+yaseen 
+english
+
+1) copy text
+1) split by words
+1) play words one by one
+1) next automatically
+1) stop button -> enter    
+   play and pause
+1) speed up, down arrow, 
+or asdf
+s up, d down
+1) show speed
+1) shwo total words, 
+1) show total words reading
+l1) record reading ifposisble later

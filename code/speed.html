@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="content.js"></script>
+<script>
+    var words = [];
+    var index = -1;
+    var timer = null;
+    var wordTimer = null;
+    var wpm = 100;
+    var maxWPM = 200;
+    var playFlag = false;
+    var startFlag = false;
+    var startDate = null;
+    var startTime = null;
+    var endTime = null;
+$(document).ready(function(){
+    init();
+});
+
+function displayStats() {
+    var stats = "total words: "  + words.length + "<br>" +
+    "start:" + startFlag + "<br>" + 
+    "play:" + playFlag + "<br>" + 
+    "current word count:" + index + "<br>" +
+    "wpm : " + wpm + "<br>" + 
+    "start time:" + startTime + "<br>" + 
+    "end time:"+ endTime + "<br>" ;
+    $("#stats").html(stats);
+}
+
+function init() {
+    words = [];
+    index = -1;
+    timer = null;
+    wordTimer = null;
+    wpm = 100;
+    playFlag = false;
+    startFlag = false;
+    words = txt.split(/\s+/);
+
+    handleShortcutKeys();
+}
+
+function startReading() {
+    console.log("start reading");
+    startTimer();
+    startWordTimer();
+}
+
+function stopReading() {
+    console.log("stop reading");
+    stopTimer();
+    stopWordTimer();
+}
+
+function pauseReading() {
+    console.log("pause reading");
+    stopWordTimer();
+}
+
+function playReading() {
+    console.log("play reading");
+    startWordTimer();
+}
+
+function increaseSpeed() {
+    console.log("increase speed");
+    
+    wpm ++;
+    wpm  %= maxWPM;
+    console.log("wpm increased to wpm: " + wpm);
+    stopWordTimer();
+    startWordTimer();
+}
+
+function decreaseSpeed() {
+    console.log("decrease speed");
+    if(wpm>0)
+        wpm --;
+    console.log("wpm increased to wpm: " + wpm);
+
+    stopWordTimer();
+    startWordTimer();
+}
+
+function handleShortcutKeys() {
+    $("body").keypress(function(e){
+        console.log(e);
+        console.log(e.code);
+        var code  = e.code;
+        if(code == "KeyS"){ //up
+            increaseSpeed();
+        } else if(code == "KeyD") {
+            console.log("wpm decrease to wpm: " + wpm);
+            decreaseSpeed();
+        } else if(code == "Space") {
+            console.log("play and pause");
+            playFlag = !playFlag;
+            console.log("playFlag:" + playFlag);
+            playFlag?playReading():pauseReading();
+        } else if(code == "Enter") {
+            console.log("start reading or stop");
+            startFlag = !startFlag;
+            console.log("startFlag:" + startFlag);
+            startFlag?startReading():stopReading();
+        }
+    });
+}
+function startWordTimer() {
+    var intervalTimeInSeconds = 60/wpm * 1000;
+    console.log("intervalTimeInSeconds:" + intervalTimeInSeconds );
+    // example wpm: 30 => 60/30 * 1000 -> 2000 -> 2 second
+    // example wpm: 10 => 60/10 * 1000 -> 6000 -> 6 second
+    wordTimer = setInterval(function() {
+        word = getNextWord();
+        //console.log("word:" + word);
+        if(word === null){
+            stopWordTimer();
+        }
+        $('#word').text(word);
+    }, intervalTimeInSeconds);
+}
+
+function stopWordTimer() {
+    clearInterval(wordTimer);
+}
+
+function startTimer() {
+    var start = new Date;
+    timer = setInterval(function() {
+        $('.timer').text((new Date - start) / 1000 + " Seconds");
+        displayStats();
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timer);
+}
+function getCurrentWord() {
+    if( words && words.length > index && index >0) {
+        return words[index];
+    }
+}
+function getNextWord() {
+    if( words && index + 1 < words.length) {
+        index ++;
+        return words[index];
+    }
+    return null; 
+}
+
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<h1>Speed Reader Yaseen</h1>
+<div class='timer'>
+    ***timer startd
+</div>
+<div id="stats">
+    total words: 
+    current word count:
+    status: play /pause
+    speed rate : wpm : 10pm
+    start time:
+    end time
+</div>
+<div id = "word" >
+  Yaseen
+</div>
+<div id="actions">
+    start
+    stop
+    play and pause
+    slow
+    speed
+</div>
+<div id="notes">
+    short cut keys
+    start : enter, stop :enter key again
+
+    play , pause: space
+    speed: s -> up speed, d : down speed
+</div>
+</body>
+</html>
